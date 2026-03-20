@@ -234,7 +234,28 @@ def check_trackers():
         time.sleep(5)
 
 
+# ================= SELF PING (keeps Render free tier awake) =================
+
+def self_ping():
+    import os
+    # Render sets RENDER_EXTERNAL_URL automatically — falls back to localhost for local dev
+    base = os.environ.get('RENDER_EXTERNAL_URL', 'http://localhost:10000')
+    url = base.rstrip('/') + '/ping'
+    while True:
+        time.sleep(600)  # every 10 minutes
+        try:
+            requests.get(url, timeout=10)
+            print(f'Self-ping OK → {url}')
+        except Exception as e:
+            print(f'Self-ping failed: {e}')
+
+@app.get('/ping')
+def ping():
+    return {'status': 'alive', 'timestamp': int(time.time())}
+
+
 # ================= STARTUP =================
 
 init_db()
 threading.Thread(target=check_trackers, daemon=True).start()
+threading.Thread(target=self_ping, daemon=True).start()
