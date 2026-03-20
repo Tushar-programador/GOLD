@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KEEPANEYE — Gold Tracker</title>
+  <title>AURUM — Gold Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
@@ -38,29 +38,18 @@ header{display:flex;align-items:center;justify-content:space-between;padding:18p
 main{padding:24px 32px;max-width:1500px;margin:0 auto;}
 
 /* ===== PRICE HERO ===== */
-.price-hero{display:grid;grid-template-columns:1fr auto;gap:2px;margin-bottom:24px;}
-.price-main{background:var(--surface);border:1px solid var(--border-hi);padding:32px 40px;position:relative;overflow:hidden;}
-.price-main::before{content:'XAU/USD';position:absolute;top:8px;right:14px;font-family:var(--fd);font-size:4.5rem;color:rgba(212,175,55,.03);pointer-events:none;}
-.price-label{font-size:.58rem;letter-spacing:.25em;color:var(--text-dim);margin-bottom:10px;}
-
-/* rolling digits */
-.price-roller-wrap{position:relative;min-height:6.5rem;}
-.price-roller{display:flex;align-items:flex-end;overflow:hidden;/* height set by JS in px */}
-.roller-fallback{font-family:var(--fd);font-size:5.6rem;color:var(--gold);text-shadow:0 0 50px rgba(212,175,55,.18);letter-spacing:.01em;line-height:1;}
-/* digit-col height/transform fully controlled by JS — only set font & color here */
-.digit-col{font-family:var(--fd);font-size:5.6rem;color:var(--gold);text-shadow:0 0 50px rgba(212,175,55,.18);letter-spacing:.01em;line-height:1;overflow:hidden;}
-.roller-sep{font-family:var(--fd);font-size:5.6rem;color:var(--gold);line-height:1;}
-.price-meta{margin-top:8px;display:flex;align-items:center;gap:8px;}
-.price-usd{font-size:.65rem;color:var(--text-dim);}
-.chg-badge{display:inline-flex;align-items:center;font-size:.68rem;padding:2px 7px;border-radius:1px;font-family:var(--fm);}
+.price-hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;margin-bottom:24px;}
+.hero-card{background:var(--surface);border:1px solid var(--border);padding:24px 28px;position:relative;overflow:hidden;}
+.hero-card.main{border-color:var(--border-hi);}
+.hero-card::after{content:attr(data-tag);position:absolute;bottom:10px;right:14px;font-family:var(--fd);font-size:3rem;color:rgba(212,175,55,.04);pointer-events:none;line-height:1;}
+.hero-lbl{font-size:.55rem;letter-spacing:.22em;color:var(--text-dim);margin-bottom:10px;}
+.hero-val{font-family:var(--fd);font-size:2.8rem;letter-spacing:.03em;line-height:1;transition:color .3s;}
+.hero-val.flash-up{color:var(--green);}
+.hero-val.flash-dn{color:var(--red);}
+.hero-sub{margin-top:8px;display:flex;align-items:center;gap:6px;}
+.chg-badge{display:inline-flex;align-items:center;font-size:.65rem;padding:2px 7px;border-radius:1px;font-family:var(--fm);}
 .chg-badge.up{background:rgba(82,201,122,.1);color:var(--green);border:1px solid rgba(82,201,122,.22);}
 .chg-badge.dn{background:rgba(224,82,82,.1);color:var(--red);border:1px solid rgba(224,82,82,.22);}
-
-.price-stats{background:var(--surface);border:1px solid var(--border);border-left:none;padding:28px 32px;display:flex;flex-direction:column;gap:16px;min-width:190px;}
-.stat-block{border-bottom:1px solid var(--border);padding-bottom:16px;}
-.stat-block:last-child{border:none;padding:0;}
-.stat-lbl{font-size:.55rem;letter-spacing:.2em;color:var(--text-dim);margin-bottom:4px;}
-.stat-val{font-family:var(--fd);font-size:1.6rem;letter-spacing:.04em;}
 
 /* ===== CHART ===== */
 .chart-wrap{background:var(--surface);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px;}
@@ -150,9 +139,7 @@ canvas.spark{flex:1;height:24px!important;}
 #fs-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:500;flex-direction:column;align-items:center;justify-content:center;}
 #fs-overlay.show{display:flex;}
 .fs-lbl{font-size:.65rem;letter-spacing:.3em;color:var(--text-dim);margin-bottom:14px;}
-.fs-roller{display:flex;align-items:flex-end;overflow:hidden;/* height set by JS */}
-.fs-digit{font-family:var(--fd);font-size:9.5rem;color:var(--gold);text-shadow:0 0 70px rgba(212,175,55,.28);line-height:1;overflow:hidden;}
-.fs-sep{font-family:var(--fd);font-size:9.5rem;color:var(--gold);line-height:1;}
+.fs-price-text{font-family:var(--fd);font-size:9rem;color:var(--gold);text-shadow:0 0 80px rgba(212,175,55,.3);line-height:1;letter-spacing:.03em;margin-bottom:4px;}
 .fs-stats{display:flex;gap:24px;margin-top:20px;}
 .fs-s{text-align:center;}
 .fs-s-lbl{font-size:.58rem;letter-spacing:.2em;color:var(--text-dim);}
@@ -176,7 +163,7 @@ canvas.spark{flex:1;height:24px!important;}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:1100px){.bottom-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:720px){main{padding:14px;}.price-hero{grid-template-columns:1fr;}.price-stats{border-left:1px solid var(--border);border-top:none;}.bottom-grid{grid-template-columns:1fr;}.digit-col,.price-roller{height:4.5rem;}.digit-col{font-size:4rem;}.roller-sep{font-size:4rem;}}
+@media(max-width:720px){main{padding:14px;}.price-hero{grid-template-columns:1fr 1fr;}.bottom-grid{grid-template-columns:1fr;}.hero-val{font-size:2rem;}}
   </style>
 </head>
 <body data-theme="dark">
@@ -187,7 +174,7 @@ canvas.spark{flex:1;height:24px!important;}
 <div id="fs-overlay">
   <button class="fs-exit" onclick="exitFS()">ESC / EXIT ✕</button>
   <div class="fs-lbl">XAU / USD — SPOT PRICE</div>
-  <div class="fs-roller" id="fsRoller"></div>
+  <div class="fs-price-text" id="fsPriceText">—</div>
   <div class="fs-stats">
     <div class="fs-s"><div class="fs-s-lbl">HIGH</div><div class="fs-s-val" id="fsHigh">—</div></div>
     <div class="fs-s"><div class="fs-s-lbl">LOW</div><div class="fs-s-val" id="fsLow">—</div></div>
@@ -216,21 +203,25 @@ canvas.spark{flex:1;height:24px!important;}
 <main>
   <!-- HERO -->
   <div class="price-hero">
-    <div class="price-main">
-      <div class="price-label">SPOT PRICE — TROY OZ</div>
-      <div class="price-roller-wrap">
-        <div class="price-roller" id="mainRoller"></div>
-        <div class="roller-fallback" id="mainFallback">—</div>
-      </div>
-      <div class="price-meta">
-        <span class="price-usd">USD</span>
+    <div class="hero-card main" data-tag="XAU">
+      <div class="hero-lbl">SPOT PRICE — XAU/USD</div>
+      <div class="hero-val" id="heroPrice">—</div>
+      <div class="hero-sub">
+        <span style="font-size:.6rem;color:var(--text-dim);">USD / TROY OZ</span>
         <span class="chg-badge up" id="chgBadge" style="display:none">▲ 0.000%</span>
       </div>
     </div>
-    <div class="price-stats">
-      <div class="stat-block"><div class="stat-lbl">SESSION HIGH</div><div class="stat-val" id="sHigh">—</div></div>
-      <div class="stat-block"><div class="stat-lbl">SESSION LOW</div><div class="stat-val" id="sLow">—</div></div>
-      <div class="stat-block"><div class="stat-lbl">ACTIVE ALERTS</div><div class="stat-val" id="sAlerts">0</div></div>
+    <div class="hero-card" data-tag="HI">
+      <div class="hero-lbl">SESSION HIGH</div>
+      <div class="hero-val" id="sHigh" style="color:var(--green);">—</div>
+    </div>
+    <div class="hero-card" data-tag="LO">
+      <div class="hero-lbl">SESSION LOW</div>
+      <div class="hero-val" id="sLow" style="color:var(--red);">—</div>
+    </div>
+    <div class="hero-card" data-tag="AL">
+      <div class="hero-lbl">ACTIVE ALERTS</div>
+      <div class="hero-val" id="sAlerts">0</div>
     </div>
   </div>
 
@@ -293,7 +284,7 @@ canvas.spark{flex:1;height:24px!important;}
 <div id="toast-wrap"></div>
 
 <script>
-const API = "";  // empty = same origin, works locally and on Railway
+const API = "";
 let curPrice = null, prevPrice = null, sessionHigh = null, sessionLow = null;
 let priceHistory = [], windowSecs = 60;
 let selType_ = 'BUY', selCd = 30;
@@ -303,81 +294,19 @@ let seenHistIds = new Set();
 let triggeredSet = new Set();
 let mainChart;
 
-/* ===== ROLLER ===== */
-const DIGS = '0123456789'.split('');
-
-function measureCharH(fontSize) {
-  // inject a real character, measure its rendered px height, remove it
-  const el = document.createElement('span');
-  el.style.cssText = `font-family:'Bebas Neue',var(--fd),sans-serif;font-size:${fontSize};line-height:1;position:fixed;top:-999px;left:-999px;visibility:hidden;white-space:nowrap;`;
-  el.textContent = '0';
-  document.body.appendChild(el);
-  const h = el.getBoundingClientRect().height;
-  document.body.removeChild(el);
-  return h;
-}
-
-function renderRoller(id, priceStr, isFS) {
-  const el = document.getElementById(id);
+/* ===== PRICE DISPLAY ===== */
+function updateHeroPrice(price, prevPrice) {
+  const el = document.getElementById('heroPrice');
   if (!el) return;
-  const colCls = isFS ? 'fs-digit' : 'digit-col';
-  const sepCls = isFS ? 'fs-sep' : 'roller-sep';
-
-  // always re-measure if not cached — px height is ground truth
-  if (!el._hPx) {
-    el._hPx = measureCharH(isFS ? '9.5rem' : '5.6rem');
-    if (!el._hPx || el._hPx < 10) el._hPx = isFS ? 152 : 90;
+  el.textContent = '$' + fmt(price);
+  if (prevPrice !== null) {
+    const cls = price > prevPrice ? 'flash-up' : price < prevPrice ? 'flash-dn' : '';
+    if (cls) { el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 600); }
   }
-  const hPx = el._hPx;
-
-  if (!el._built || el._len !== priceStr.length) {
-    el.innerHTML = '';
-    // set container height to exactly one character tall
-    el.style.height = hPx + 'px';
-    el.style.overflow = 'hidden';
-
-    for (let i = 0; i < priceStr.length; i++) {
-      const ch = priceStr[i];
-      if (ch === '.' || ch === ',') {
-        const s = document.createElement('div');
-        s.className = sepCls;
-        s.style.cssText = `display:flex;align-items:flex-end;height:${hPx}px;padding-bottom:4px;`;
-        s.textContent = ch;
-        el.appendChild(s);
-      } else {
-        const col = document.createElement('div');
-        col.className = colCls;
-        // column is 10 digits tall; each slot = hPx
-        col.style.cssText = `display:flex;flex-direction:column;height:${hPx * 10}px;transition:transform .4s cubic-bezier(.22,1,.36,1);`;
-        DIGS.forEach(d => {
-          const sp = document.createElement('span');
-          sp.textContent = d;
-          // each slot must be exactly hPx so translateY(n*hPx) lands on the right digit
-          sp.style.cssText = `display:flex;align-items:center;justify-content:center;height:${hPx}px;flex-shrink:0;`;
-          col.appendChild(sp);
-        });
-        el.appendChild(col);
-      }
-    }
-    el._built = true;
-    el._len = priceStr.length;
-  }
-
-  // hide fallback
-  const fb = document.getElementById(id.replace('Roller', 'Fallback'));
-  if (fb) fb.style.display = 'none';
-
-  const cols = el.querySelectorAll('.' + colCls);
-  let ci = 0;
-  for (let i = 0; i < priceStr.length; i++) {
-    const ch = priceStr[i];
-    if (ch === '.' || ch === ',') continue;
-    const d = parseInt(ch);
-    if (!isNaN(d) && cols[ci]) {
-      cols[ci].style.transform = `translateY(-${d * hPx}px)`;
-    }
-    ci++;
-  }
+}
+function renderFSPrice(price) {
+  const el = document.getElementById('fsPriceText');
+  if (el) el.textContent = '$' + fmt(price);
 }
 
 function fmt(p) { return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -480,9 +409,8 @@ async function fetchPrice() {
     if (priceHistory.length > 3000) priceHistory.shift();
     if (sessionHigh===null||price>sessionHigh) sessionHigh=price;
     if (sessionLow===null||price<sessionLow) sessionLow=price;
-    const ps = fmt(price);
-    renderRoller('mainRoller', ps, false);
-    renderRoller('fsRoller', ps, true);
+    updateHeroPrice(price, prevPrice);
+    renderFSPrice(price);
     if (prevPrice!==null) {
       const pct = ((price-prevPrice)/prevPrice*100);
       const b = document.getElementById('chgBadge'); b.style.display='';
@@ -623,7 +551,7 @@ async function clearHistory(){try{await fetch(API+"/alert-history",{method:'DELE
 function setTheme(name,btn){document.body.dataset.theme=name;document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 
 /* ===== FULLSCREEN ===== */
-function enterFS(){document.getElementById('fs-overlay').classList.add('show');const fr=document.getElementById('fsRoller');fr._built=false;fr._hPx=null;if(curPrice)renderRoller('fsRoller',fmt(curPrice),true);updateFSChips();}
+function enterFS(){document.getElementById('fs-overlay').classList.add('show');if(curPrice)renderFSPrice(curPrice);updateFSChips();}
 function exitFS(){document.getElementById('fs-overlay').classList.remove('show');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')exitFS();});
 
